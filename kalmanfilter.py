@@ -17,7 +17,7 @@ class matrix:
     def zero(self, dimx, dimy):
         # check if valid dimensions
         if dimx < 1 or dimy < 1:
-            raise ValueError, "Invalid size of matrix"
+            raise ValueError("Invalid size of matrix")
         else:
             self.dimx = dimx
             self.dimy = dimy
@@ -26,7 +26,7 @@ class matrix:
     def identity(self, dim):
         # check if valid dimension
         if dim < 1:
-            raise ValueError, "Invalid size of matrix"
+            raise ValueError("Invalid size of matrix")
         else:
             self.dimx = dim
             self.dimy = dim
@@ -36,15 +36,13 @@ class matrix:
 
     def show(self):
         for i in range(self.dimx):
-            print
-            self.value[i]
-        print
-        ' '
+            print(self.value[i])
+        print(' ')
 
     def __add__(self, other):
         # check if correct dimensions
         if self.dimx != other.dimx or self.dimy != other.dimy:
-            raise ValueError, "Matrices must be of equal dimensions to add"
+            raise ValueError("Matrices must be of equal dimensions to add")
         else:
             # add if correct dimensions
             res = matrix([[]])
@@ -57,7 +55,7 @@ class matrix:
     def __sub__(self, other):
         # check if correct dimensions
         if self.dimx != other.dimx or self.dimy != other.dimy:
-            raise ValueError, "Matrices must be of equal dimensions to subtract"
+            raise ValueError("Matrices must be of equal dimensions to subtract")
         else:
             # subtract if correct dimensions
             res = matrix([[]])
@@ -70,7 +68,7 @@ class matrix:
     def __mul__(self, other):
         # check if correct dimensions
         if self.dimy != other.dimx:
-            raise ValueError, "Matrices must be m*n and n*p to multiply"
+            raise ValueError("Matrices must be m*n and n*p to multiply")
         else:
             # subtract if correct dimensions
             res = matrix([[]])
@@ -105,7 +103,7 @@ class matrix:
                 res.value[i][i] = 0.0
             else:
                 if d < 0.0:
-                    raise ValueError, "Matrix not positive-definite"
+                    raise ValueError("Matrix not positive-definite")
                 res.value[i][i] = sqrt(d)
             for j in range(i + 1, self.dimx):
                 S = sum([res.value[k][i] * res.value[k][j] for k in range(self.dimx)])
@@ -142,13 +140,23 @@ class matrix:
 ########################################
 
 # Implement the filter function below
-
 def kalman_filter(x, P):
     for n in range(len(measurements)):
+        print("")
 
-    # measurement update
+        #Measurement update
+        Z = matrix([[measurements[n]]])
+        y = Z - (H * x)
+        S = H * P * H.transpose() + R
+        K = P * H.transpose() * S.inverse()
+        x = x + (K*y)
+        P = (I - K * H) * P
 
-    # prediction
+        #Prediction
+        x = F.__mul__(x).__add__(u)
+        FT = F.transpose()
+        P = F.__mul__(P).__mul__(FT)
+
 
     return x, P
 
@@ -167,8 +175,7 @@ H = matrix([[1., 0.]])  # measurement function
 R = matrix([[1.]])  # measurement uncertainty
 I = matrix([[1., 0.], [0., 1.]])  # identity matrix
 
-print
-kalman_filter(x, P)
+print(kalman_filter(x, P))
 # output should be:
 # x: [[3.9996664447958645], [0.9999998335552873]]
 # P: [[2.3318904241194827, 0.9991676099921091], [0.9991676099921067, 0.49950058263974184]]
